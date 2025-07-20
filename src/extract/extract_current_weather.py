@@ -48,7 +48,7 @@ class ExtractDataCurrentWeather:
         self.url = "https://api.openweathermap.org/data/2.5"
         self.endpoint = "weather"
 
-    def extract_data(self):
+    def extract_data(self) -> list[dict]:
         """
         Método para extrair os dados da OpenWeather.
 
