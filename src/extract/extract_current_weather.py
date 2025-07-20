@@ -13,7 +13,6 @@ logger = logging.getLogger(__name__)
 class ExtractDataCurrentWeather:
     def __init__(
         self,
-        file_path: str,
         lat_long_list: list[str] = None,
         api_key: str = None,
         mode: str = 'json',
@@ -24,8 +23,6 @@ class ExtractDataCurrentWeather:
         Método construtor da classe ExtractDataCurrentWeather, para extrair os dados da OpenWeather.
 
         Args:
-            file_path:
-                Caminho do arquivo CSV contendo os municípios e suas respectivas latitudes e longitudes.
             lat_long_list:
                 Lista contendo a latitude e longitude dos municípios.
             api_key: 
@@ -38,7 +35,6 @@ class ExtractDataCurrentWeather:
             lang:
                 Idioma dos dados retornados. Padrão é 'pt_br'.
         """
-        self.file_path = file_path
         self.lat_long_list = lat_long_list
         self.api_key = api_key
         self.mode = mode
@@ -90,3 +86,5 @@ class ExtractDataCurrentWeather:
                 logger.error(f"Request error occurred: {req_err}")
             except Exception as e:
                 logger.error(f"An error occurred while processing the request: {e}")
+
+        return all_weathers
