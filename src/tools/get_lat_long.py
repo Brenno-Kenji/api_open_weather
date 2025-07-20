@@ -3,17 +3,17 @@ import pandas as pd
 
 import os
 
-class GetLatLong:
+class LatLong:
     def __init__(self, file_path: str) -> None:
         """
-        Método construtor da classe GetLatLong, para extrair a latitude e longitude de um arquivo CSV.
+        Método construtor da classe LatLong, para extrair a latitude e longitude de um arquivo CSV.
 
         Args:
             file_path: Caminho do arquivo csv.
         """
         self.file_path = file_path
 
-    def get_lat_long(self, cities: list[str]=None) -> list:
+    def get_lat_long(self, cities: list[str] = None) -> list:
         """
         Método construtor da classe GetLatLong, para extrair a latitude e longitude de um arquivo CSV.
 
@@ -23,7 +23,8 @@ class GetLatLong:
                 Se None, retorna a latitude e longitude de todos os municipios do arquivo.
 
         Returns:
-            lat_long_list: Lista contendo a latitude e longitude das cidades do parâmetro.
+            lat_long_list:
+                Lista contendo a latitude e longitude das cidades do parâmetro.
         """
         if not os.path.exists(self.file_path):
             raise FileNotFoundError(f"The file {self.file_path} does not exist.")
