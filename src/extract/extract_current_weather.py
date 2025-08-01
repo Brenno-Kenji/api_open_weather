@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 class ExtractDataCurrentWeather:
     def __init__(
         self,
-        lat_long_list: list[str] = None,
+        lat_long_list: list[list] = None,
         api_key: str = None,
         mode: str = 'json',
         units: str = 'metric',
@@ -77,9 +77,10 @@ class ExtractDataCurrentWeather:
                 response.raise_for_status()
                 data = response.json()
                 logging.info(f"Requesting weather data for coordinates: {lat}, {long}")
+                
                 all_weathers.append(data)
-
-                time.sleep(request_interval)  # Atraso entre as requisições para evitar pagamento de limite
+                time.sleep(request_interval)  
+                
             except requests.exceptions.HTTPError as http_err:
                 logger.error(f"HTTP error occurred: {http_err}")
             except requests.exceptions.RequestException as req_err:
