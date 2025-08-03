@@ -1,5 +1,6 @@
 import logging
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 import pandas as pd
 import sqlalchemy as sa
@@ -88,5 +89,5 @@ class LoadCurrentWeather:
             df:
                 DataFrame com a coluna 'extract_date' adicionada.
         """
-        df['extract_date'] = datetime.now().strftime(self.date_format)
+        df['extract_date'] = datetime.now(tz=ZoneInfo("America/Sao_Paulo")).strftime(self.date_format)
         return df
