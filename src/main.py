@@ -35,7 +35,7 @@ class WeatherApp:
         self.db_name = os.getenv('DB_NAME')
         self.db_schema = os.getenv('DB_SCHEMA')
         
-        self.file_path = "../data/raw_data/municipios.csv"
+        self.file_path = "data/raw_data/municipios.csv"
         self.cities = [
             "Campinas", "Xaxim"
         ]
