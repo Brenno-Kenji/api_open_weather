@@ -4,6 +4,7 @@ from zoneinfo import ZoneInfo
 
 import pandas as pd
 import sqlalchemy as sa
+from sqlalchemy import inspect
 
 logging.basicConfig(
     level=logging.INFO,
@@ -28,7 +29,7 @@ class LoadCurrentWeather:
             raw_data:
                 Lista de dicionários contendo os dados extraídos da OpenWeather.
             conn_string: 
-                String de conexão com o banco de dados.s
+                String de conexão com o banco de dados.
             schema:
                 Esquema do banco de dados onde os dados serão carregados.
             table_name:
@@ -56,6 +57,7 @@ class LoadCurrentWeather:
         try:
             logger.info('Starting data load.')
             with engine.begin() as connection:
+                self._create_new_columns(df, connection)
                 df.to_sql(self.table_name, con=connection, if_exists='append', index=False, schema=self.schema)
             logger.info(f'{len(df)} records successfully loaded.')
         except Exception as exc:
@@ -91,3 +93,35 @@ class LoadCurrentWeather:
         """
         df['extract_date'] = datetime.now(tz=ZoneInfo("America/Sao_Paulo")).strftime(self.date_format)
         return df
+    
+    def _create_new_columns(self, df: pd.DataFrame, connection) -> None:
+        """
+        Método para adicionar novas colunas a tabela no banco de dados, caso não existam.
+
+        Args:
+            df:
+                DataFrame contendo os dados extraídos.
+            connection:
+                Conexão com o banco de dados.
+        """
+
+        try:
+            inspector = inspect(connection)
+            if inspector.has_table(self.table_name, schema=self.schema):
+                existing_columns = {col['name'] for col in inspector.get_columns(self.table_name, schema=self.schema)}
+                missing_columns = set(df.columns) - existing_columns
+
+                if not missing_columns:
+                    logger.info('No new columns to add.')
+                    return None
+                
+                logger.info(f'Adding {len(missing_columns)} new columns.')
+                with connection.begin():
+                    for column in missing_columns:
+                        connection.execute(
+                            sa.text(f'ALTER TABLE {self.schema}.{self.table_name} ADD COLUMN {column} TEXT')
+                        )
+                logger.info(f'Added new columns: {", ".join(missing_columns)} to table {self.table_name}.')
+        except Exception as e:
+            logger.error(f'Error creating new columns: {e}')
+            raise
